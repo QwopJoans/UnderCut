@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+	<dict>
+			<key>ALChangeNotification</key>
+			<string>com.lebirava.undercut.settingschanged</string>
+			<key>ALSettingsKeyPrefix</key>
+			<string>udcFavorites-</string>
+			<key>ALSettingsPath</key>
+			<string>/var/mobile/Library/Preferences/com.lebirava.undercut.plist</string>
+			<key>bundle</key>
+			<string>AppList</string>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>isController</key>
+			<true/>
+			<key>label</key>
+			<string>Favorites</string>
+		</dict>
+		<dict>
+				<key>ALChangeNotification</key>
+				<string>com.lebirava.undercut.settingschanged</string>
+				<key>ALSettingsKeyPrefix</key>
+				<string>udcBlacklist-</string>
+				<key>ALSettingsPath</key>
+				<string>/var/mobile/Library/Preferences/com.lebirava.undercut.plist</string>
+				<key>bundle</key>
+				<string>AppList</string>
+				<key>cell</key>
+				<string>PSLinkCell</string>
+				<key>isController</key>
+				<true/>
+				<key>label</key>
+				<string>Excluded Applications</string>
+			</dict>
+	</array>
+	<key>title</key>
+	<string>UnderCut</string>
+</dict>
+</plist>

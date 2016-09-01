@@ -1,0 +1,10 @@
+Package: com.lebirava.undercut
+Name: UnderCut
+Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 3.0), com.rpetrich.rocketbootstrap (>= 1.0.3) | firmware (<< 7.0)
+Architecture: iphoneos-arm
+Description: There's apps down there, I say!
+Maintainer: Lebirava
+Author: Lebirava
+Section: Tweaks
+Version: 0.0.1-8+debug
+Installed-Size: 302
