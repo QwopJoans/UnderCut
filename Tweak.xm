@@ -19,9 +19,10 @@
 @interface SBDockIconListView : SBIconListView
 @end
 
-
 float oldY;
 BOOL dragging;
+//UIVisualEffectView *appDrawerBackgroundView;
+UIView *appDrawerBackgroundView;
 UIView *appDrawerView;
 UIView *appsLabelView;
 UIView *favoritesLabelView;
@@ -92,7 +93,13 @@ NSArray* excludedApps = [[NSArray alloc] initWithObjects:
 - (void)viewDidLoad {
   %orig;
 
-  appDrawerView=[[UIView alloc] initWithFrame:CGRectMake(0,103,SCREEN_WIDTH,SCREEN_HEIGHT - (20 + 96))];
+
+	//UIBlurEffect *effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+	//appDrawerBackgroundView = [[UIVisualEffectView alloc] initWithEffect:effect];
+	//appDrawerBackgroundView.frame = CGRectMake(0,103,SCREEN_WIDTH,SCREEN_HEIGHT - (20 + 96));
+	appDrawerBackgroundView=[[UIView alloc] initWithFrame:CGRectMake(0,103,SCREEN_WIDTH,SCREEN_HEIGHT - (20 + 96))];
+
+  appDrawerView=[[UIView alloc] initWithFrame:CGRectMake(0,0,SCREEN_WIDTH,SCREEN_HEIGHT - (20 + 96))];
   appDrawerView.backgroundColor=[UIColor clearColor];
 
   applicationsView=[[UIScrollView alloc] initWithFrame:CGRectMake(0,70,SCREEN_WIDTH,SCREEN_HEIGHT - (20 + 96 + 70))];
@@ -146,7 +153,7 @@ NSArray* excludedApps = [[NSArray alloc] initWithObjects:
   [tapFavorites release];
   [favoritesLabelView addSubview:favoritesLabel];
 
-  searchField = [[UITextField alloc] initWithFrame:CGRectMake(25, 0, SCREEN_WIDTH - 50, 30)];
+  searchField = [[UITextField alloc] initWithFrame:CGRectMake(25, 5, SCREEN_WIDTH - 50, 30)];
   searchField.textColor = [UIColor whiteColor];
   searchField.font = [searchField.font fontWithSize:17];
   searchField.backgroundColor = [UIColor colorWithRed: 175/255.0 green:175/255.0 blue:175/255.0 alpha:0.4];
@@ -215,7 +222,7 @@ NSArray* excludedApps = [[NSArray alloc] initWithObjects:
   for (NSString* i in [searchList allValues]) {
       [searchNames addObject:i];
   }
-  searchNames = [[searchNames sortedArrayUsingSelector:@selector(compare:)] mutableCopy];
+  searchNames = [[searchNames sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] mutableCopy];
   for (int i = 1; i <= searchNames.count; i++)
   {
     CGRect  appRect = CGRectMake(0, 0, kScrollObjWidth, kScrollObjHeight + 20);
@@ -309,13 +316,13 @@ NSArray* excludedApps = [[NSArray alloc] initWithObjects:
   for(NSString* i in [appList allValues]) {
       [appNames addObject:i];
   }
-  appNames = [[appNames sortedArrayUsingSelector:@selector(compare:)] mutableCopy];
+  appNames = [[appNames sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] mutableCopy];
 
   favoriteNames = [[NSMutableArray alloc] init];
   for(NSString* i in [favoritesList allValues]) {
     [favoriteNames addObject:i];
   }
-  favoriteNames = [[favoriteNames sortedArrayUsingSelector:@selector(compare:)] mutableCopy];
+  favoriteNames = [[favoriteNames sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] mutableCopy];
 
   for (int i = 1; i <= appNames.count; i++)
   {
@@ -436,8 +443,8 @@ NSArray* excludedApps = [[NSArray alloc] initWithObjects:
 
 
 
-  [applicationsView setContentSize:CGSizeMake([applicationsView bounds].size.width, (((appNames.count + 4 - 1) / 4) * (kScrollObjHeight + 27)))];
-  [favoritesView setContentSize:CGSizeMake([favoritesView bounds].size.width, (((favoriteNames.count + 4 - 1) / 4) * (kScrollObjHeight + 27)))];
+  [applicationsView setContentSize:CGSizeMake([applicationsView bounds].size.width, (((appNames.count + 4 - 1) / 4) * (kScrollObjHeight + spacing)))];
+  [favoritesView setContentSize:CGSizeMake([favoritesView bounds].size.width, (((favoriteNames.count + 4 - 1) / 4) * (kScrollObjHeight + spacing)))];
 }
 %new
 - (void) openApp: (UITapGestureRecognizer *)recognizer
@@ -513,7 +520,7 @@ NSArray* excludedApps = [[NSArray alloc] initWithObjects:
 %hook SBDockIconListView
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-
+		%orig(touches, event);
     UITouch *touch = [[event allTouches] anyObject];
     CGPoint touchLocation = [touch locationInView:self];
 
@@ -522,7 +529,9 @@ NSArray* excludedApps = [[NSArray alloc] initWithObjects:
         dragging = YES;
         oldY = touchLocation.y;
         if (self.superview.frame.size.height == 96){
-            [self.superview addSubview:appDrawerView];
+            [self.superview addSubview:appDrawerBackgroundView];
+            //[appDrawerBackgroundView.contentView addSubview:appDrawerView];
+            [appDrawerBackgroundView addSubview:appDrawerView];
             [appDrawerView addSubview:applicationsView];
             [appDrawerView addSubview:favoritesView];
             [appDrawerView addSubview:searchView];
@@ -533,7 +542,7 @@ NSArray* excludedApps = [[NSArray alloc] initWithObjects:
     }
 }
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-
+		%orig(touches, event);
     UITouch *touch = [[event allTouches] anyObject];
     CGPoint touchLocation = [touch locationInView:self];
 
@@ -549,7 +558,7 @@ NSArray* excludedApps = [[NSArray alloc] initWithObjects:
     }
 }
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-
+		%orig(touches, event);
     dragging = NO;
     CGRect frame = self.superview.frame;
     if (frame.origin.y > (SCREEN_HEIGHT - 96) / 2) {
